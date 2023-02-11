@@ -1,7 +1,6 @@
 import React from "react";
 import Button from "../Button";
 import RadioSection from "../RadioSection";
-import Toast from "../Toast";
 import useToggle from "../../hooks/useToggle";
 import styles from "./ToastPlayground.module.css";
 import ToastShelf from "../ToastShelf/ToastShelf";
@@ -9,28 +8,32 @@ import ToastShelf from "../ToastShelf/ToastShelf";
 function ToastPlayground() {
 	const [message, setMessage] = React.useState("");
 	const [showToast, toggleToast] = useToggle();
+	const [toasts, setToasts] = React.useState([]);
 	const [variant, setVariant] = React.useState("notice");
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
-		setMessage(message);
-
+		const newToast = [...toasts, { id: crypto.randomUUID(), message, variant }];
+		setToasts(newToast);
+		setMessage("");
 		if (!showToast) toggleToast();
 	};
 
+	const handleCloseToast = React.useMemo(() => {
+		return (id) => {
+			const newToast = toasts.filter((toast) => toast.id !== id);
+			setToasts(newToast);
+		};
+	}, [toasts]);
+
 	return (
-		<form onSubmit={handleSubmit} className={styles.wrapper}>
+		<div className={styles.wrapper}>
 			<header>
 				<img alt="Cute toast mascot" src="/toast.png" />
 				<h1>Toast Playground</h1>
 			</header>
-			{showToast && (
-				<Toast toggle={toggleToast} variant={variant}>
-					{message}
-				</Toast>
-			)}
-
-			<div className={styles.controlsWrapper}>
+			<ToastShelf handleCloseToast={handleCloseToast} toasts={toasts} />
+			<form onSubmit={handleSubmit} className={styles.controlsWrapper}>
 				<div className={styles.row}>
 					<label
 						htmlFor="message"
@@ -59,8 +62,8 @@ function ToastPlayground() {
 						<Button>Pop Toast!</Button>
 					</div>
 				</div>
-			</div>
-		</form>
+			</form>
+		</div>
 	);
 }
 
