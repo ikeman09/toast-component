@@ -2,12 +2,15 @@ import React from "react";
 
 import ToastPlayground from "../ToastPlayground";
 import Footer from "../Footer";
+import ToastProvider from "../../Providers/ToastProvider";
 
 function App() {
 	return (
 		<>
-			<ToastPlayground />
-			<Footer />
+			<ToastProvider>
+				<ToastPlayground />
+				<Footer />
+			</ToastProvider>
 		</>
 	);
 }

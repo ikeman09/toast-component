@@ -6,7 +6,7 @@ import {
 	Info,
 	X,
 } from "react-feather";
-
+import { ToastContext } from "../../Providers/ToastProvider";
 import VisuallyHidden from "../VisuallyHidden";
 import styles from "./Toast.module.css";
 
@@ -19,6 +19,7 @@ const ICONS_BY_VARIANT = {
 
 function Toast({ id, children, variant = "notice", handleCloseToast }) {
 	const Icon = ICONS_BY_VARIANT[variant];
+	const { removeToast } = React.useContext(ToastContext);
 
 	console.log("Toast is rendered");
 	return (
@@ -31,7 +32,7 @@ function Toast({ id, children, variant = "notice", handleCloseToast }) {
 				className={styles.closeButton}
 				onClick={(event) => {
 					event.preventDefault();
-					handleCloseToast(id);
+					removeToast(id);
 				}}
 			>
 				<X size={24} />
