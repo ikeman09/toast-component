@@ -1,19 +1,21 @@
 import React from "react";
-
 import Button from "../Button";
-import RadioButton from "../RadioButton";
-
+import RadioSection from "../RadioSection";
+import Toast from "../Toast";
+import useToggle from "../../hooks/useToggle";
 import styles from "./ToastPlayground.module.css";
-
-const VARIANT_OPTIONS = ["notice", "warning", "success", "error"];
+import ToastShelf from "../ToastShelf/ToastShelf";
 
 function ToastPlayground() {
 	const [message, setMessage] = React.useState("");
+	const [showToast, toggleToast] = useToggle();
+	const [variant, setVariant] = React.useState("notice");
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
-		console.log(message);
-		setMessage("");
+		setMessage(message);
+
+		if (!showToast) toggleToast();
 	};
 
 	return (
@@ -22,6 +24,11 @@ function ToastPlayground() {
 				<img alt="Cute toast mascot" src="/toast.png" />
 				<h1>Toast Playground</h1>
 			</header>
+			{showToast && (
+				<Toast toggle={toggleToast} variant={variant}>
+					{message}
+				</Toast>
+			)}
 
 			<div className={styles.controlsWrapper}>
 				<div className={styles.row}>
@@ -44,20 +51,7 @@ function ToastPlayground() {
 					</div>
 				</div>
 
-				<div className={styles.row}>
-					<div className={styles.label}>Variant</div>
-					<div className={`${styles.inputWrapper} ${styles.radioWrapper}`}>
-						{VARIANT_OPTIONS.map((variant) => (
-							<RadioButton
-								key={crypto.randomUUID()}
-								variant={variant}
-								group="variant"
-							>
-								{variant}
-							</RadioButton>
-						))}
-					</div>
-				</div>
+				<RadioSection variant={variant} setVariant={setVariant} />
 
 				<div className={styles.row}>
 					<div className={styles.label} />
@@ -70,4 +64,4 @@ function ToastPlayground() {
 	);
 }
 
-export default ToastPlayground;
+export default React.memo(ToastPlayground);
